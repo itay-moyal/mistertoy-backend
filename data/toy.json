@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Toy-3",
+    "price": 4444,
+    "labels": [
+      "On wheels",
+      "Box game",
+      "Art",
+      "Baby"
+    ],
+    "inStock": true,
+    "_id": "SVrbpW",
+    "imgUrl": "https://robohash.org/Toy-3?set=set2"
+  },
+  {
+    "name": "ToyBoy2",
+    "price": 2312,
+    "labels": [
+      "On wheels",
+      "Box game",
+      "Art"
+    ],
+    "inStock": false,
+    "_id": "VFc33",
+    "createdAt": "2026-05-12T12:41:40.298Z"
+  }
+]
