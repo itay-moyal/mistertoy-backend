@@ -13,15 +13,25 @@
     "imgUrl": "https://robohash.org/Toy-3?set=set2"
   },
   {
-    "name": "ToyBoy2",
-    "price": 2312,
+    "name": "tests",
+    "price": 1232,
+    "labels": [],
+    "inStock": false,
+    "imgUrl": "https://robohash.org/tests?set=set2",
+    "_id": "Ak7Av",
+    "createdAt": "2026-05-12T19:52:08.075Z"
+  },
+  {
+    "name": "TestImage",
+    "price": 3422,
     "labels": [
       "On wheels",
       "Box game",
-      "Art"
+      "Outdoor"
     ],
     "inStock": false,
-    "_id": "VFc33",
-    "createdAt": "2026-05-12T12:41:40.298Z"
+    "imgUrl": "https://robohash.org/TestImage?set=set2",
+    "_id": "yfK09",
+    "createdAt": "2026-05-12T19:52:42.231Z"
   }
 ]

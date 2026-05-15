@@ -9,12 +9,12 @@ export const toyService = {
   save,
   remove,
 }
-console.log("toys", toys)
+// console.log("toys", toys)
 
-function query(queryOptions = {}) {
+async function query(queryOptions = {}) {
   const { filterBy, sortBy } = queryOptions
-  console.log("queryOptions", queryOptions)
-  if (!filterBy) return Promise.resolve(toys)
+  // console.log("queryOptions", queryOptions)
+  if (!filterBy) return toys
 
   let filteredToys = toys
 
@@ -24,12 +24,12 @@ function query(queryOptions = {}) {
   }
   if (filterBy.labels && filterBy.labels.length > 0) {
     filteredToys = filteredToys.filter((toy) => {
-      toy.labels.some((label) => filterBy.labels.includes(label))
+      return toy.labels.some((label) => filterBy.labels.includes(label))
     })
   }
   if (filterBy.inStock) {
     filteredToys = filteredToys.filter((toy) => {
-      toy.inStock === JSON.parse(filterBy.inStock)
+      return toy.inStock === JSON.parse(filterBy.inStock)
     })
   }
   filterBy.maxPrice = +filterBy.maxPrice ? +filterBy.maxPrice : Infinity
@@ -45,33 +45,35 @@ function query(queryOptions = {}) {
   //   if (sort.by === "name") return toy1.name.localeCompare(toy2.name) * dir
   // })
 
-  return Promise.resolve(filteredToys)
+  return filteredToys
 }
-function getById(toyId) {
+async function getById(toyId) {
   const toy = toys.find((toy) => toy._id === toyId)
-  return Promise.resolve(toy)
+  if (!toy) throw new Error("No such toy.")
+  return toy
 }
 
-function save(toyToSave) {
+async function save(toyToSave) {
   if (toyToSave._id) {
     const idx = toys.findIndex((toy) => toy._id === toyToSave._id)
-    if (idx === -1) return Promise.reject("No such toy.")
+    if (idx === -1) throw new Error(`no such toy`)
     toys[idx] = { ...toys[idx], ...toyToSave }
   } else {
     toyToSave._id = makeId()
     toyToSave.createdAt = new Date(Date.now())
-    toys.push(toyToSave)
+    ;((toyToSave.imgUrl = `https://robohash.org/${toyToSave.name}?set=set2`),
+      toys.push(toyToSave))
   }
-  _saveToysToFile()
-  return Promise.resolve(toyToSave)
+  await _saveToysToFile()
+  return toyToSave
 }
 
-function remove(toyId) {
+async function remove(toyId) {
   const idx = toys.findIndex((toy) => toy._id === toyId)
-  if (idx === -1) return Promise.reject("No such toy.")
+  if (idx === -1) throw new Error(`no such toy`)
   toys.splice(idx, 1)
-  _saveToysToFile()
-  return Promise.resolve()
+  await _saveToysToFile()
+  return
 }
 
 function _saveToysToFile() {

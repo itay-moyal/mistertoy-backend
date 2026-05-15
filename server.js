@@ -30,69 +30,64 @@ if (process.env.NODE_ENV === "production") {
 
 // TOY API
 
-app.get("/api/toy", (req, res) => {
+app.get("/api/toy", async (req, res) => {
   const queryOptions = parseQueryParams(req.query)
 
   console.log(queryOptions)
-
-  toyService
-    .query(queryOptions)
-    .then((toys) => res.send(toys))
-    .catch((err) => {
-      loggerService.error(err)
-      res.status(404).send("Can't get toys")
-    })
+  try {
+    const toys = await toyService.query(queryOptions)
+    return res.send(toys)
+  } catch (err) {
+    loggerService.error(err)
+    res.status(404).send("Can't get toys")
+  }
 })
 
-app.get("/api/toy/:id", (req, res) => {
+app.get("/api/toy/:id", async (req, res) => {
   const toyId = req.params.id
 
-  toyService
-    .getById(toyId)
-    .then((toy) => {
-      res.send(toy)
-    })
-    .catch((err) => {
-      loggerService.error(err)
-      res.status(404).send("Can't find toy")
-    })
+  try {
+    const toy = await toyService.getById(toyId)
+    return res.send(toy)
+  } catch (err) {
+    loggerService.error(err)
+    res.status(404).send("Can't find toy")
+  }
 })
 
-app.put("/api/toy/:id", (req, res) => {
+app.put("/api/toy/:id", async (req, res) => {
   const toy = req.body
-  toyService
-    .save(toy)
-    .then((savedToy) => {
-      res.send(savedToy)
-    })
-    .catch((err) => {
-      loggerService.error(err)
-      res.status(404).send("Can't save toy")
-    })
+
+  try {
+    const savedToy = await toyService.save(toy)
+    return res.send(savedToy)
+  } catch (err) {
+    loggerService.error(err)
+    res.status(404).send("Can't save toy")
+  }
 })
 
-app.delete("/api/toy/:id", (req, res) => {
+app.delete("/api/toy/:id", async (req, res) => {
   const toyId = req.params.id
-  toyService
-    .remove(toyId)
-    .then(() => res.send("Removed!"))
-    .catch((err) => {
-      loggerService.error(err)
-      res.status(404).send("Can't find toy to remove")
-    })
+  try {
+    const toyToRemove = await toyService.remove(toyId)
+    res.send("Removed!")
+  } catch (err) {
+    loggerService.error(err)
+    res.status(404).send("Can't find toy to remove")
+  }
 })
 
-app.post("/api/toy", (req, res) => {
+app.post("/api/toy", async (req, res) => {
   const toy = req.body
-  toyService
-    .save(toy)
-    .then((savedToy) => {
-      res.send(savedToy)
-    })
-    .catch((err) => {
-      loggerService.error(err)
-      res.status(404).send("Can't save toy")
-    })
+
+  try {
+    const savedToy = await toyService.save(toy)
+    res.send(savedToy)
+  } catch (err) {
+    loggerService.error(err)
+    res.status(404).send("Can't save toy")
+  }
 })
 
 //  QUERY PARAMS
