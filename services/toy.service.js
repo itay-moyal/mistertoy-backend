@@ -48,8 +48,9 @@ async function query(queryOptions = {}) {
   return filteredToys
 }
 async function getById(toyId) {
-  const toy = toys.find((toy) => toy._id === toyId)
+  let toy = toys.find((toy) => toy._id === toyId)
   if (!toy) throw new Error("No such toy.")
+  toy = _setNextPrevToyId(toy)
   return toy
 }
 
@@ -78,4 +79,13 @@ async function remove(toyId) {
 
 function _saveToysToFile() {
   return writeJsonFile(PATH, toys)
+}
+
+function _setNextPrevToyId(toy) {
+  const toyIdx = toys.findIndex((currToy) => currToy._id === toy._id)
+  const nextToy = toys[toyIdx + 1] ? toys[toyIdx + 1] : toys[0]
+  const prevToy = toys[toyIdx - 1] ? toys[toyIdx - 1] : toys[toys.length - 1]
+  toy.nextToyId = nextToy._id
+  toy.prevToyId = prevToy._id
+  return toy
 }

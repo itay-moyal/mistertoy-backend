@@ -33,5 +33,29 @@
     "imgUrl": "https://robohash.org/TestImage?set=set2",
     "_id": "yfK09",
     "createdAt": "2026-05-12T19:52:42.231Z"
+  },
+  {
+    "name": "123",
+    "price": 222,
+    "labels": [
+      "Box game"
+    ],
+    "inStock": true,
+    "imgUrl": "https://robohash.org/?set=set2",
+    "_id": "GecYX",
+    "createdAt": "2026-05-15T17:38:50.333Z"
+  },
+  {
+    "name": "asd",
+    "price": 243,
+    "labels": [
+      "Box game",
+      "Puzzle",
+      "Outdoor"
+    ],
+    "inStock": true,
+    "imgUrl": "https://robohash.org/asd?set=set2",
+    "_id": "rf5cX",
+    "createdAt": "2026-05-17T14:06:40.203Z"
   }
 ]
