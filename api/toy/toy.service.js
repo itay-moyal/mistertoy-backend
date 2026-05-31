@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb"
 import { dbService } from "../../services/db.service.js"
 import { logger } from "../../services/logger.service.js"
 import { makeId } from "../../services/util.service.js"
+import { log } from "../../middlewares/logger.middleware.js"
 
 export const toyService = {
   query,
@@ -48,11 +49,12 @@ async function getById(toyId) {
 
 async function save(toyToSave) {
   if (toyToSave._id) {
+    const { _id, ...toyToUpdate } = toyToSave
     try {
       const collection = await dbService.getCollection("toy")
       await collection.updateOne(
         { _id: ObjectId.createFromHexString(toyToSave._id) },
-        { $set: toyToSave },
+        { $set: toyToUpdate },
       )
       return toyToSave
     } catch (err) {
