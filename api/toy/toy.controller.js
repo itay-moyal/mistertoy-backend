@@ -80,7 +80,9 @@ export async function removeToyMsg(req, res) {
 function parseQueryParams(queryParams) {
   const filterBy = {
     txt: queryParams.txt || "",
-    inStock: +queryParams.inStock || "",
+    minPrice: +queryParams.minPrice,
+    maxPrice: +queryParams.maxPrice,
+    inStock: queryParams.inStock || "",
     labels: queryParams.labels || [],
   }
   const sortBy = {
