@@ -35,17 +35,6 @@
     "createdAt": "2026-05-12T19:52:42.231Z"
   },
   {
-    "name": "123",
-    "price": 222,
-    "labels": [
-      "Box game"
-    ],
-    "inStock": true,
-    "imgUrl": "https://robohash.org/?set=set2",
-    "_id": "GecYX",
-    "createdAt": "2026-05-15T17:38:50.333Z"
-  },
-  {
     "name": "asd",
     "price": 243,
     "labels": [

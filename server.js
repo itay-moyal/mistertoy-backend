@@ -1,112 +1,52 @@
 import express from "express"
-import cors from "cors"
 import cookieParser from "cookie-parser"
-import { log } from "console"
+import cors from "cors"
+import path, { dirname } from "path"
+import { fileURLToPath } from "url"
 
-import { toyService } from "./services/toy.service.js"
-import { loggerService } from "./services/logger.service.js"
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+import { logger } from "./services/logger.service.js"
+logger.info("server.js loaded...")
 
 const app = express()
-app.use(express.static("public"))
+
 app.use(cookieParser())
 app.use(express.json())
-app.set("query parser", "extended")
+app.use(express.static("public"))
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("public"))
+  app.use(express.static(path.resolve(__dirname, "public")))
+  console.log("__dirname: ", __dirname)
 } else {
   const corsOptions = {
     origin: [
-      "http://localhost:5173",
       "http://127.0.0.1:5173",
-
-      "http://localhost:5174",
-      "http://127.0.0.1:5174",
+      "http://localhost:5173",
+      "http://127.0.0.1:3000",
+      "http://localhost:3000",
     ],
     credentials: true,
   }
   app.use(cors(corsOptions))
 }
 
-// TOY API
+import { authRoutes } from "./api/auth/auth.routes.js"
+import { userRoutes } from "./api/user/user.routes.js"
+import { toyRoutes } from "./api/toy/toy.routes.js"
+import { userService } from "./api/user/user.service.js"
 
-app.get("/api/toy", async (req, res) => {
-  const queryOptions = parseQueryParams(req.query)
+app.use("/api/auth", authRoutes)
+app.use("/api/user", userRoutes)
+app.use("/api/toy", toyRoutes)
 
-  console.log(queryOptions)
-  try {
-    const toys = await toyService.query(queryOptions)
-    return res.send(toys)
-  } catch (err) {
-    loggerService.error(err)
-    res.status(404).send("Can't get toys")
-  }
+app.get("{*splat}", (req, res) => {
+  res.sendFile(path.resolve("public/index.html"))
 })
 
-app.get("/api/toy/:id", async (req, res) => {
-  const toyId = req.params.id
+const port = process.env.PORT || 3030
 
-  try {
-    const toy = await toyService.getById(toyId)
-    return res.send(toy)
-  } catch (err) {
-    loggerService.error(err)
-    res.status(404).send("Can't find toy")
-  }
-})
-
-app.put("/api/toy/:id", async (req, res) => {
-  const toy = req.body
-
-  try {
-    const savedToy = await toyService.save(toy)
-    return res.send(savedToy)
-  } catch (err) {
-    loggerService.error(err)
-    res.status(404).send("Can't save toy")
-  }
-})
-
-app.delete("/api/toy/:id", async (req, res) => {
-  const toyId = req.params.id
-  try {
-    const toyToRemove = await toyService.remove(toyId)
-    res.send("Removed!")
-  } catch (err) {
-    loggerService.error(err)
-    res.status(404).send("Can't find toy to remove")
-  }
-})
-
-app.post("/api/toy", async (req, res) => {
-  const toy = req.body
-
-  try {
-    const savedToy = await toyService.save(toy)
-    res.send(savedToy)
-  } catch (err) {
-    loggerService.error(err)
-    res.status(404).send("Can't save toy")
-  }
-})
-
-//  QUERY PARAMS
-
-function parseQueryParams(queryParams) {
-  const filterBy = {
-    txt: queryParams.txt || "",
-    inStock: +queryParams.inStock || "",
-    labels: queryParams.labels || [],
-  }
-  const sort = {
-    sortField: queryParams.sortField || "",
-    sortDir: +queryParams.sortDir || 1,
-  }
-
-  return { filterBy, sort }
-}
-
-const port = 3030
 app.listen(port, () => {
-  console.log("Server is up and listening to", port)
+  logger.info("Server is running on port: " + port)
 })
