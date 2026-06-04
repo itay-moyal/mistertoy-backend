@@ -4,7 +4,7 @@ import { logger } from "../../services/logger.service.js"
 export async function getUser(req, res) {
   const userId = req.params.id
   try {
-    const user = await userService.getByIdO(userId)
+    const user = await userService.getById(userId)
     res.send(user)
   } catch (err) {
     logger.error("Failed to get user", err)
