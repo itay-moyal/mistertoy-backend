@@ -37,7 +37,9 @@ import { userRoutes } from "./api/user/user.routes.js"
 import { toyRoutes } from "./api/toy/toy.routes.js"
 import { reviewRoutes } from "./api/review/review.routes.js"
 import { userService } from "./api/user/user.service.js"
+import { setupAsyncLocalStorage } from "./middlewares/setupAls.middleware.js"
 
+app.all("/{*splat}", setupAsyncLocalStorage)
 app.use("/api/auth", authRoutes)
 app.use("/api/user", userRoutes)
 app.use("/api/toy", toyRoutes)

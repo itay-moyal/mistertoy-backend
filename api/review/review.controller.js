@@ -15,16 +15,13 @@ export async function getReviews(req, res) {
 }
 
 export async function deleteReview(req, res) {
-  var { loggedinUser } = req
   const { id: reviewId } = req.params
 
   try {
-    const deletedCount = await reviewService.remove(reviewId)
-    if (deletedCount === 1) {
-      res.send({ msg: "Deleted successfully" })
-    } else {
-      res.status(400).send({ err: "Cannot remove review" })
-    }
+    
+    await reviewService.remove(reviewId)
+
+    res.send({ msg: "Deleted successfully" })
   } catch (err) {
     logger.error("Failed to delete review", err)
     res.status(400).send({ err: "Failed to delete review" })
@@ -36,9 +33,17 @@ export async function addReview(req, res) {
 
   try {
     var review = req.body
-    const { toyId } = review
-    review.userId = loggedinUser._id
+    const { aboutToyId } = review
+    review.byUserId = loggedinUser._id
     review = await reviewService.add(review)
+
+    review.byUser = loggedinUser
+
+    review.aboutToy = await toyService.getById(aboutToyId)
+    review.createdAt = review._id.getTimestamp()
+
+    delete review.aboutToyId
+    delete review.byUserId
 
     res.send(review)
   } catch (err) {

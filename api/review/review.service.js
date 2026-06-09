@@ -22,34 +22,34 @@ async function query(filterBy = {}) {
         },
         {
           $lookup: {
-            localField: "userId",
+            localField: "byUserId",
             from: "user",
             foreignField: "_id",
-            as: "user",
+            as: "byUser",
           },
         },
         {
-          $unwind: "$user",
+          $unwind: "$byUser",
         },
         {
           $lookup: {
-            localField: "toyId",
+            localField: "aboutToyId",
             from: "toy",
             foreignField: "_id",
-            as: "toy",
+            as: "aboutToy",
           },
         },
         {
-          $unwind: "$toy",
+          $unwind: "$aboutToy",
         },
         {
           $project: {
             txt: true,
-            "user._id": true,
-            "user.fullname": true,
-            "toy._id": true,
-            "toy.name": true,
-            "toy.price": true,
+            "byUser._id": true,
+            "byUser.fullname": true,
+            "aboutToy._id": true,
+            "aboutToy.name": true,
+            "aboutToy.price": true,
           },
         },
       ])
@@ -68,7 +68,7 @@ async function remove(reviewId) {
     const criteria = { _id: ObjectId.createFromHexString(reviewId) }
 
     if (!loggedinUser.isAdmin) {
-      criteria.userId = ObjectId.createFromHexString(loggedinUser._id)
+      criteria.byUserId = ObjectId.createFromHexString(loggedinUser._id)
     }
 
     const { deletedCount } = await collection.deleteOne(criteria)
@@ -82,8 +82,8 @@ async function add(review) {
   try {
     const reviewToAdd = {
       txt: review.txt,
-      userId: ObjectId.createFromHexString(review.userId),
-      toyId: ObjectId.createFromHexString(review.toyId),
+      byUserId: ObjectId.createFromHexString(review.byUserId),
+      aboutToyId: ObjectId.createFromHexString(review.aboutToyId),
     }
     const collection = await dbService.getCollection("review")
     await collection.insertOne(reviewToAdd)
@@ -98,11 +98,12 @@ async function add(review) {
 function _buildCriteria(filterBy) {
   const criteria = {}
 
-  if (filterBy.userId) {
-    criteria.userId = ObjectId.createFromHexString(filterBy.userId)
+  if (filterBy.byUserId) {
+    criteria.byUserId = ObjectId.createFromHexString(filterBy.byUserId)
   }
-  if (filterBy.toyId) {
-    criteria.toyId = ObjectId.createFromHexString(filterBy.toyId)
+
+  if (filterBy.aboutToyId) {
+    criteria.aboutToyId = ObjectId.createFromHexString(filterBy.aboutToyId)
   }
   return criteria
 }
